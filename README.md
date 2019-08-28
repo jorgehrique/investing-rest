@@ -2,12 +2,13 @@
 
 API RESTFul de dados sobre o mercado financeiro retirados do site
 [Investing](https://www.investing.com/ "Investing")
-Sendo útil para criação de interfaces customizadas e EA's (Expert Advisors).
+<br>Sendo útil para criação de interfaces customizadas e EA's (Expert Advisors).
 
 ## Recursos
 
 - Calendário Econômico - /economic-calendar
 - Bancos Centrais - /central-banks
+- Crypto Moedas - /crypto/currencies/ ou /crypto/currencies/{symbol}
 - <i>Em desenvolvimento ...</i>
 
 ## Desenvolvimento
