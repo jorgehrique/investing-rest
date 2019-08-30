@@ -8,7 +8,10 @@ API RESTFul de dados sobre o mercado financeiro retirados do site
 
 - Calendário Econômico - /economic-calendar
 - Bancos Centrais - /central-banks
-- Crypto Moedas - /crypto/currencies/ ou /crypto/currencies/{symbol}
+- Crypto Moedas - /crypto/currencies ou /crypto/currencies/{symbol}
+- Indices - /indices/{region} ou /indices/{region}/{symbol}
+<br><i>Ex: /indices/brazil-indices/bovespa</i>
+
 - <i>Em desenvolvimento ...</i>
 
 ## Desenvolvimento
