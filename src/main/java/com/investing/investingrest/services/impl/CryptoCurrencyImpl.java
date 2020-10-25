@@ -1,10 +1,12 @@
 package com.investing.investingrest.services.impl;
 
+import com.investing.investingrest.exceptions.PathNotFoundException;
 import com.investing.investingrest.models.CryptoCurrency;
 import com.investing.investingrest.services.CryptoCurrencyService;
 import com.investing.investingrest.utils.InvestingUtil;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -15,14 +17,11 @@ import java.util.stream.Collectors;
 @Service
 public class CryptoCurrencyImpl implements CryptoCurrencyService {
 
-    private final Document document;
-
-    public CryptoCurrencyImpl() {
-        this.document = InvestingUtil.getDocument("crypto/currencies");
-    }
+    @Autowired
+    private InvestingUtil investingUtil;
 
     @Override
-    public Optional<CryptoCurrency> getCryptoBySymbol(final String symbol) {
+    public Optional<CryptoCurrency> getCryptoBySymbol(final String symbol) throws PathNotFoundException {
         return this.getCryptos()
                 .stream()
                 .filter(c -> c.getSymbol().equals(symbol.toUpperCase()))
@@ -30,10 +29,13 @@ public class CryptoCurrencyImpl implements CryptoCurrencyService {
     }
 
     @Override
-    public List<CryptoCurrency> getCryptos() {
+    public List<CryptoCurrency> getCryptos() throws PathNotFoundException {
+        Optional<Document> document = investingUtil.getDocument("/crypto/currencies");
+        if(document.isEmpty()) throw new PathNotFoundException("/crypto/currencies");
+
         List<CryptoCurrency> cryptos = new ArrayList<>();
 
-        for (Element row : document.select("#fullColumn table tr")) {
+        for (Element row : document.get().select("#fullColumn table tr")) {
             if (row != null) {
                 Element name = row.select(".cryptoName a").first();
                 Element symbol = row.select(" .symb").first();

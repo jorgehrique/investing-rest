@@ -1,5 +1,6 @@
 package com.investing.investingrest.resources;
 
+import com.investing.investingrest.exceptions.PathNotFoundException;
 import com.investing.investingrest.models.Indice;
 import com.investing.investingrest.services.IndicesService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,11 +22,19 @@ public class IndicesResource {
     @GetMapping("/{region}/{symbol}")
     public ResponseEntity<Indice> getIndiceBySymbol(@PathVariable("region") String region,
                                                     @PathVariable("symbol") String symbol){
-        return ResponseEntity.of(indicesService.getIndiceBySymbol(region, symbol));
+        try {
+            return ResponseEntity.of(indicesService.getIndiceBySymbol(region, symbol));
+        } catch (PathNotFoundException e) {
+            return ResponseEntity.notFound().build();
+        }
     }
 
     @GetMapping("/{region}")
     public ResponseEntity<List<Indice>> getIndicesList(@PathVariable String region){
-        return ResponseEntity.ok(indicesService.getIndicesByRegion(region));
+        try {
+            return ResponseEntity.ok(indicesService.getIndicesByRegion(region));
+        } catch (PathNotFoundException e) {
+            return ResponseEntity.notFound().build();
+        }
     }
 }

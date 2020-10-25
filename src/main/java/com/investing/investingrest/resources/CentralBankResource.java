@@ -1,5 +1,6 @@
 package com.investing.investingrest.resources;
 
+import com.investing.investingrest.exceptions.PathNotFoundException;
 import com.investing.investingrest.models.CentralBank;
 import com.investing.investingrest.services.CentralBanksService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,9 +20,13 @@ public class CentralBankResource {
 
     @GetMapping
     public ResponseEntity<List<CentralBank>> getCentralBanksList(){
-        return ResponseEntity
-                .ok()
-                .body(centralBanksService.getCentralBanks());
+        try {
+            return ResponseEntity
+                    .ok()
+                    .body(centralBanksService.getCentralBanks());
+        } catch (PathNotFoundException e) {
+            return ResponseEntity.notFound().build();
+        }
     }
 
 }

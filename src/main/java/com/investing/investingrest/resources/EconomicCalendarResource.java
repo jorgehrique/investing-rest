@@ -1,5 +1,6 @@
 package com.investing.investingrest.resources;
 
+import com.investing.investingrest.exceptions.PathNotFoundException;
 import com.investing.investingrest.models.CalendarEvent;
 import com.investing.investingrest.services.EconomicCalendarService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,8 +20,12 @@ public class EconomicCalendarResource {
 
     @GetMapping
     public ResponseEntity<List<CalendarEvent>> getListCalendarEvent(){
-        return ResponseEntity
-                .ok()
-                .body(economicCalendarService.getCalendarEvents());
+        try {
+            return ResponseEntity
+                    .ok()
+                    .body(economicCalendarService.getCalendarEvents());
+        } catch (PathNotFoundException e) {
+            return ResponseEntity.notFound().build();
+        }
     }
 }

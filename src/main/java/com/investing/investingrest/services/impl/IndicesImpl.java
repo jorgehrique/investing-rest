@@ -1,10 +1,12 @@
 package com.investing.investingrest.services.impl;
 
+import com.investing.investingrest.exceptions.PathNotFoundException;
 import com.investing.investingrest.models.Indice;
 import com.investing.investingrest.services.IndicesService;
 import com.investing.investingrest.utils.InvestingUtil;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -14,10 +16,11 @@ import java.util.Optional;
 @Service
 public class IndicesImpl implements IndicesService {
 
-    private Document document;
+    @Autowired
+    private InvestingUtil investingUtil;
 
     @Override
-    public Optional<Indice> getIndiceBySymbol(String region, String symbol) {
+    public Optional<Indice> getIndiceBySymbol(String region, String symbol) throws PathNotFoundException {
         return this.getIndicesByRegion(region)
                 .stream()
                 .filter(indice -> indice.getSymbol().equals(symbol))
@@ -25,11 +28,14 @@ public class IndicesImpl implements IndicesService {
     }
 
     @Override
-    public List<Indice> getIndicesByRegion(String region) {
-        List<Indice> indices = new ArrayList<>();
-        this.document = InvestingUtil.getDocument("indices/" + region);
+    public List<Indice> getIndicesByRegion(String region) throws PathNotFoundException {
+        Optional<Document> document = investingUtil.getDocument("indices/" + region);
+        if(document.isEmpty()) throw new PathNotFoundException("indices/" + region);
 
-        for (Element row : document.select("#cr1 tr")) {
+        List<Indice> indices = new ArrayList<>();
+//        this.document = InvestingUtil.getDocument("indices/" + region);
+
+        for (Element row : document.get().select("#cr1 tr")) {
             if (row != null) {
                 Element symbol = row.select(".bold.left.noWrap a").first();
                 List<Element> elements = row.select("td");

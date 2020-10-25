@@ -2,22 +2,35 @@ package com.investing.investingrest.utils;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
 
+import java.util.Optional;
+
+@Component
 public class InvestingUtil {
 
-    private static final String investingUrl = "https://www.investing.com/";
-    private static final String browser = "Mozilla/5.0";
+    @Value("${investing.util.base-url}")
+    private String investingUrl;
 
-    public static Document getDocument(String path) {
+    @Value("${investing.util.browser}")
+    private String browser;
+
+    public Optional<Document> getDocument(String path) {
         try {
-            return Jsoup
+            return Optional.of(
+                Jsoup
                 .connect(investingUrl + path)
                 .userAgent(browser)
-                .get();
+                .get()
+            );
+
         } catch(Exception ex){
             ex.printStackTrace();
-            return null;
+            return Optional.empty();
         }
     }
+
+    // java.net.SocketTimeoutException: Read timed out
 
 }
